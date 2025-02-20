@@ -14,12 +14,21 @@ import ThunderCloud from '../Component/ThunderCloud.jsx';
 const Experience = () => {
     const [showLightning, setShowLightning] = useState(false);
     const [shakeIntensity, setShakeIntensity] = useState(0);
+    const [activeLightning, setActiveLightning] = useState([false, false, false, false]);
 
     const shake = useRef();
     const lightningStrikeRef1 = useRef();
     const lightningStrikeRef2 = useRef();
 
     const handleLightning = () => {
+
+        setActiveLightning([
+            Math.random() > 0.5,
+            Math.random() > 0.5,
+            Math.random() > 0.5,
+            Math.random() > 0.5,
+          ]);
+
         setShowLightning(true);
         triggerShake();
         setTimeout(() => {
@@ -65,6 +74,36 @@ const Experience = () => {
         straightness: 0.5,
         subrayPeriod: 1.5
     };
+    const customParams3 = {
+        ...defaultRayParams,
+        sourceOffset: new THREE.Vector3(0, 0, 0),
+        destOffset: new THREE.Vector3(
+            4 * Math.random(),
+            -40 * Math.random(),
+            20 * Math.random()
+        ),
+        roughness: 0.85,
+        maxIterations: 8,
+        maxSubrayRecursion: 4,
+        raymification: 9,
+        straightness: 0.5,
+        subrayPeriod: 1.5
+    };
+    const customParams4 = {
+        ...defaultRayParams,
+        sourceOffset: new THREE.Vector3(0, 0, 0),
+        destOffset: new THREE.Vector3(
+            4 * Math.random(),
+            -40 * Math.random(),
+            20 * Math.random()
+        ),
+        roughness: 0.85,
+        maxIterations: 8,
+        maxSubrayRecursion: 4,
+        raymification: 9,
+        straightness: 0.5,
+        subrayPeriod: 1.5
+    };
 
     return (
         <Canvas
@@ -73,7 +112,10 @@ const Experience = () => {
             gl={{
                 antialias: false,
                 alpha: true,
-                powerPreference: 'high-performance'
+                powerPreference: 'high-performance',
+                outputColorSpace: THREE.sRGBEncoding,
+                toneMapping: THREE.ACESFilmicToneMapping,
+
             }}
         >
             <Perf position="top-left" />
@@ -105,37 +147,29 @@ const Experience = () => {
 
             {showLightning && (
                 <group>
-                    <LightningStrikeComponent
+                     {activeLightning[0] && (<LightningStrikeComponent
                         rayParams={customParams1}
-                        color={'#9be9fe'}
-                        ref={lightningStrikeRef1}
-                    />
-                    <LightningStrikeComponent
+                    />)} 
+                    {activeLightning[1] && (<LightningStrikeComponent
                         rayParams={customParams2}
-                        color={'#9be9fe'}
-                        ref={lightningStrikeRef2}
-                    />
+                    />)}
+                    {activeLightning[2] && (<LightningStrikeComponent
+                        rayParams={customParams3}
+                    />)}
+                    {activeLightning[3] && (<LightningStrikeComponent
+                        rayParams={customParams4}
+                    />)}
                 </group>
             )}
 
-            <EffectComposer multisampling={10}>
+            <EffectComposer multisampling={0}>
                 <Bloom
                     mipmapBlur={true}
                     luminanceThreshold={0.0}
                     luminanceSmoothing={0.95}
                     intensity={5}
                 />
-                {/* <SelectiveBloom
-                    luminanceThreshold={0.0}
-                    luminanceSmoothing={0.9}
-                    intensity={2.5}
-                    bloom={0.7}
-                    radius={0.1}
-                    threshold={0.5}
-                    selection={null}
-                
-                /> */}
-                {/* <Vignette eskil={false} offset={0.1} darkness={1.1} /> */}
+                <Vignette eskil={false} offset={0.1} darkness={1.1} />
             </EffectComposer>
         </Canvas>
     );

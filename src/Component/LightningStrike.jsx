@@ -31,11 +31,13 @@ export const defaultRayParams = {
     roughness: 0.85, //From 0 to 1. The higher the value, the more wrinkled is the ray. Default: 0.9
     straightness: 0.6 // From 0 to 1. The higher the value, the more straight will be a subray path. Default: 0.7
 };
+const LightningStrikeColor = ['#9be9fe', '#9bbcfe','#9ba5fe','#b09bfe' ];
+
 
 const LightningStrikeComponent = ({
     // Allow the user to supply custom parameters or use defaults
     rayParams = defaultRayParams,
-    color = '#9be9fe',
+    color = LightningStrikeColor[Math.floor(Math.random() * LightningStrikeColor.length)],
     ...props
 }) => {
     // Store the lightning strike geometry instance in state
