@@ -21,10 +21,9 @@ const Lightning = () => {
     const TextureMaterialProp = useMemo(
         () => ({
             uDiffuseTexture: LightningTexture,
-            uTime : 0
-        }),[
-            LightningTexture
-        ]
+            uTime: 0
+        }),
+        [LightningTexture]
     );
 
     useFrame((clock) => {
@@ -35,7 +34,12 @@ const Lightning = () => {
         <>
             <mesh>
                 <planeGeometry args={[1, 1]} />
-                <lightningTexture ref={textureRef} side={THREE.DoubleSide} {...TextureMaterialProp} key={LightningTexture.key} />
+                <lightningTexture
+                    ref={textureRef}
+                    side={THREE.DoubleSide}
+                    {...TextureMaterialProp}
+                    key={LightningTexture.key}
+                />
             </mesh>
         </>
     );

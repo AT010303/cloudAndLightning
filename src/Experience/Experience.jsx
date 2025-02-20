@@ -1,7 +1,16 @@
 /* eslint-disable no-unused-vars */
-import { CameraControls,CameraShake, PerspectiveCamera } from '@react-three/drei';
+import {
+    CameraControls,
+    CameraShake,
+    PerspectiveCamera
+} from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { Bloom, EffectComposer, SelectiveBloom, Vignette } from '@react-three/postprocessing';
+import {
+    Bloom,
+    EffectComposer,
+    SelectiveBloom,
+    Vignette
+} from '@react-three/postprocessing';
 import { Perf } from 'r3f-perf';
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -14,20 +23,24 @@ import ThunderCloud from '../Component/ThunderCloud.jsx';
 const Experience = () => {
     const [showLightning, setShowLightning] = useState(false);
     const [shakeIntensity, setShakeIntensity] = useState(0);
-    const [activeLightning, setActiveLightning] = useState([false, false, false, false]);
+    const [activeLightning, setActiveLightning] = useState([
+        false,
+        false,
+        false,
+        false
+    ]);
 
     const shake = useRef();
     const lightningStrikeRef1 = useRef();
     const lightningStrikeRef2 = useRef();
 
     const handleLightning = () => {
-
         setActiveLightning([
             Math.random() > 0.5,
             Math.random() > 0.5,
             Math.random() > 0.5,
-            Math.random() > 0.5,
-          ]);
+            Math.random() > 0.5
+        ]);
 
         setShowLightning(true);
         triggerShake();
@@ -114,8 +127,7 @@ const Experience = () => {
                 alpha: true,
                 powerPreference: 'high-performance',
                 outputColorSpace: THREE.sRGBEncoding,
-                toneMapping: THREE.ACESFilmicToneMapping,
-
+                toneMapping: THREE.ACESFilmicToneMapping
             }}
         >
             <Perf position="top-left" />
@@ -127,7 +139,7 @@ const Experience = () => {
                 fov={90}
                 onUpdate={(self) => self.lookAt(0, 0, 0)}
             >
-            {/* <CameraControls /> */}
+                {/* <CameraControls /> */}
                 <CameraShake
                     ref={shake}
                     decay
@@ -147,18 +159,18 @@ const Experience = () => {
 
             {showLightning && (
                 <group>
-                     {activeLightning[0] && (<LightningStrikeComponent
-                        rayParams={customParams1}
-                    />)} 
-                    {activeLightning[1] && (<LightningStrikeComponent
-                        rayParams={customParams2}
-                    />)}
-                    {activeLightning[2] && (<LightningStrikeComponent
-                        rayParams={customParams3}
-                    />)}
-                    {activeLightning[3] && (<LightningStrikeComponent
-                        rayParams={customParams4}
-                    />)}
+                    {activeLightning[0] && (
+                        <LightningStrikeComponent rayParams={customParams1} />
+                    )}
+                    {activeLightning[1] && (
+                        <LightningStrikeComponent rayParams={customParams2} />
+                    )}
+                    {activeLightning[2] && (
+                        <LightningStrikeComponent rayParams={customParams3} />
+                    )}
+                    {activeLightning[3] && (
+                        <LightningStrikeComponent rayParams={customParams4} />
+                    )}
                 </group>
             )}
 

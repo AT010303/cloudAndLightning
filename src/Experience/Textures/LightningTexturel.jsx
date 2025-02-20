@@ -7,7 +7,7 @@ import vertexShader from '../Shaders/Lightning/vertex.glsl';
 const LightningTexture = shaderMaterial(
     {
         uDiffuseTexture: new THREE.Texture(),
-        uTime : 0
+        uTime: 0
         // uAlphaTexture: new THREE.Texture(),
         // uDisplacementStrength: 0.00333,
         // uProgress: 0,
