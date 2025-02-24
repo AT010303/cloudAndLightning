@@ -60,7 +60,7 @@ const Experience = () => {
                 fov={90}
                 onUpdate={(self) => self.lookAt(0, 0, 0)}
             > */}
-                <CameraControls>
+            <CameraControls>
                 <CameraShake
                     ref={shake}
                     decay
@@ -72,7 +72,7 @@ const Experience = () => {
                     rollFrequency={2}
                     intensity={shakeIntensity}
                 />
-                </CameraControls>
+            </CameraControls>
             {/* </PerspectiveCamera> */}
 
             <ThunderCloud onLightning={handleLightning} />

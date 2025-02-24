@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Cloud, Clouds } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -42,7 +41,7 @@ const ThunderCloud = ({ onLightning }) => {
                     />
                     <CuboidCollider
                         position={[0, -15, 0]}
-                        args={[400, 10, 400]}
+                        args={[50, 10, 50]}
                     />
                 </Physics>
             </Clouds>
@@ -65,7 +64,7 @@ function Puffycloud({
     const [flash] = useState(
         () =>
             new random.FlashGen({
-                count: 10,
+                count: 5,
                 minDuration: 40,
                 maxDuration: 200
             })
@@ -155,7 +154,7 @@ function Puffycloud({
             {...props}
             colliders={false}
         >
-            <BallCollider args={[4]} />
+            <BallCollider args={[5]} />
             <Cloud
                 seed={seed}
                 fade={30}
@@ -211,7 +210,7 @@ function Pointer({ vec = new THREE.Vector3(), dir = new THREE.Vector3() }) {
             colliders={false}
             ref={ref}
         >
-            <BallCollider args={[4]} />
+            <BallCollider args={[5]} />
         </RigidBody>
     );
 }
