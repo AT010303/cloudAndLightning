@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Cloud, Clouds } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -10,6 +11,8 @@ import {
 import { random } from 'maath';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
+
+import LightningStrikeComponent, { defaultRayParams } from './LightningStrike';
 
 const ThunderCloud = ({ onLightning }) => {
     return (
@@ -55,6 +58,9 @@ function Puffycloud({
 }) {
     const api = useRef();
     const light = useRef();
+
+    const [showLightning, setShowLightning] = useState(false);
+    const [activeLightning, setActiveLightning] = useState([false, false]);
     // Create a flash generator (used to modulate cloud light)
     const [flash] = useState(
         () =>
@@ -89,6 +95,12 @@ function Puffycloud({
             flash.burst();
             if (onLightning) {
                 onLightning(payload);
+                setActiveLightning([Math.random() > 0.7, Math.random() > 0.9]);
+
+                setShowLightning(true);
+                setTimeout(() => {
+                    setShowLightning(false);
+                }, 1500 * Math.random());
             }
         }
     };
@@ -100,6 +112,37 @@ function Puffycloud({
             vec.copy(api.current.translation()).negate().multiplyScalar(10)
         );
     });
+
+    const customParams1 = {
+        ...defaultRayParams,
+        sourceOffset: new THREE.Vector3(0, 0, 0),
+        destOffset: new THREE.Vector3(
+            4 * (Math.random() - 0.5) * 2,
+            -40 * (Math.random() - 0.5) * 2,
+            20 * (Math.random() - 0.5) * 2
+        ),
+        roughness: 0.85,
+        maxIterations: 8,
+        maxSubrayRecursion: 4,
+        raymification: 9,
+        straightness: 0.5,
+        subrayPeriod: 1.5
+    };
+    const customParams2 = {
+        ...defaultRayParams,
+        sourceOffset: new THREE.Vector3(0, 0, 0),
+        destOffset: new THREE.Vector3(
+            4 * Math.random(),
+            -40 * Math.random(),
+            20 * Math.random()
+        ),
+        roughness: 0.95,
+        maxIterations: 8,
+        maxSubrayRecursion: 4,
+        raymification: 9,
+        straightness: 0.35,
+        subrayPeriod: 1.5
+    };
 
     return (
         <RigidBody
@@ -139,6 +182,16 @@ function Puffycloud({
                 ref={light}
                 color={randomColor}
             />
+            {showLightning && (
+                <group>
+                    {activeLightning[0] && (
+                        <LightningStrikeComponent rayParams={customParams1} />
+                    )}
+                    {activeLightning[1] && (
+                        <LightningStrikeComponent rayParams={customParams2} />
+                    )}
+                </group>
+            )}
         </RigidBody>
     );
 }

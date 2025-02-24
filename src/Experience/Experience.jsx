@@ -15,37 +15,20 @@ import { Perf } from 'r3f-perf';
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
 
-import LightningStrikeComponent, {
-    defaultRayParams
-} from '../Component/LightningStrike';
 import ThunderCloud from '../Component/ThunderCloud.jsx';
 
 const Experience = () => {
     const [showLightning, setShowLightning] = useState(false);
     const [shakeIntensity, setShakeIntensity] = useState(0);
-    const [activeLightning, setActiveLightning] = useState([
-        false,
-        false,
-        false,
-        false
-    ]);
-
     const shake = useRef();
-    const lightningStrikeRef1 = useRef();
-    const lightningStrikeRef2 = useRef();
 
     const handleLightning = () => {
-        setActiveLightning([
-            Math.random() > 0.5,
-            Math.random() > 0.5,
-            Math.random() > 0.5,
-            Math.random() > 0.5
-        ]);
-
+        setShakeIntensity(5);
         setShowLightning(true);
         triggerShake();
         setTimeout(() => {
             setShowLightning(false);
+            setShakeIntensity(0);
         }, 1500 * Math.random());
     };
 
@@ -56,71 +39,9 @@ const Experience = () => {
         }, 300);
     };
 
-    const customParams1 = {
-        ...defaultRayParams,
-        sourceOffset: new THREE.Vector3(0, 0, 0),
-        destOffset: new THREE.Vector3(
-            4 * Math.random(),
-            -40 * Math.random(),
-            20 * Math.random()
-        ),
-        roughness: 0.85,
-        maxIterations: 8,
-        maxSubrayRecursion: 4,
-        raymification: 9,
-        straightness: 0.5,
-        subrayPeriod: 1.5
-    };
-
-    const customParams2 = {
-        ...defaultRayParams,
-        sourceOffset: new THREE.Vector3(0, 0, 0),
-        destOffset: new THREE.Vector3(
-            4 * Math.random(),
-            -40 * Math.random(),
-            20 * Math.random()
-        ),
-        roughness: 0.85,
-        maxIterations: 8,
-        maxSubrayRecursion: 4,
-        raymification: 9,
-        straightness: 0.5,
-        subrayPeriod: 1.5
-    };
-    const customParams3 = {
-        ...defaultRayParams,
-        sourceOffset: new THREE.Vector3(0, 0, 0),
-        destOffset: new THREE.Vector3(
-            4 * Math.random(),
-            -40 * Math.random(),
-            20 * Math.random()
-        ),
-        roughness: 0.85,
-        maxIterations: 8,
-        maxSubrayRecursion: 4,
-        raymification: 9,
-        straightness: 0.5,
-        subrayPeriod: 1.5
-    };
-    const customParams4 = {
-        ...defaultRayParams,
-        sourceOffset: new THREE.Vector3(0, 0, 0),
-        destOffset: new THREE.Vector3(
-            4 * Math.random(),
-            -40 * Math.random(),
-            20 * Math.random()
-        ),
-        roughness: 0.85,
-        maxIterations: 8,
-        maxSubrayRecursion: 4,
-        raymification: 9,
-        straightness: 0.5,
-        subrayPeriod: 1.5
-    };
-
     return (
         <Canvas
-            camera={{ position: [0, 0, 50] }}
+            camera={{ position: [0, 0, 30] }}
             dpr={[1, 2]}
             gl={{
                 antialias: false,
@@ -133,13 +54,13 @@ const Experience = () => {
             <Perf position="top-left" />
             <ambientLight intensity={0.2} />
 
-            <PerspectiveCamera
+            {/* <PerspectiveCamera
                 makeDefault
                 position={[0, -4, 30]}
                 fov={90}
                 onUpdate={(self) => self.lookAt(0, 0, 0)}
-            >
-                {/* <CameraControls /> */}
+            > */}
+                <CameraControls>
                 <CameraShake
                     ref={shake}
                     decay
@@ -151,28 +72,12 @@ const Experience = () => {
                     rollFrequency={2}
                     intensity={shakeIntensity}
                 />
-            </PerspectiveCamera>
+                </CameraControls>
+            {/* </PerspectiveCamera> */}
 
             <ThunderCloud onLightning={handleLightning} />
 
             {/* <pointLight position={[50, 0, 0]} color={'white'} intensity={50} /> */}
-
-            {showLightning && (
-                <group>
-                    {activeLightning[0] && (
-                        <LightningStrikeComponent rayParams={customParams1} />
-                    )}
-                    {activeLightning[1] && (
-                        <LightningStrikeComponent rayParams={customParams2} />
-                    )}
-                    {activeLightning[2] && (
-                        <LightningStrikeComponent rayParams={customParams3} />
-                    )}
-                    {activeLightning[3] && (
-                        <LightningStrikeComponent rayParams={customParams4} />
-                    )}
-                </group>
-            )}
 
             <EffectComposer multisampling={0}>
                 <Bloom
