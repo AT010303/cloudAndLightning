@@ -19,13 +19,9 @@ const ThunderCloud = ({ onLightning }) => {
 
     const cloudsRef = useRef();
 
-    const [sourceOffset1, setSourceOffset1] = useState(
+    const [lightningOrigin, setLightningOrigin] = useState(
         new THREE.Vector3(0, 0, 0)
     );
-    const [sourceOffset2, setSourceOffset2] = useState(
-        new THREE.Vector3(0, 0, 0)
-    );
-
     const contact = (cloudPosition) => {
         if (onLightning) {
             setActiveLightning([Math.random() > 0.5, Math.random() > 0.6]);
@@ -35,13 +31,12 @@ const ThunderCloud = ({ onLightning }) => {
                 setShowLightning(false);
             }, 1000 * Math.random());
         }
-        setSourceOffset1(cloudPosition);
-        setSourceOffset2(cloudPosition);
+        setLightningOrigin(cloudPosition);
     };
 
     const customParams1 = {
         ...defaultRayParams,
-        sourceOffset: sourceOffset1,
+        sourceOffset: lightningOrigin,
         destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
             -50 * Math.random(),
@@ -56,7 +51,7 @@ const ThunderCloud = ({ onLightning }) => {
     };
     const customParams2 = {
         ...defaultRayParams,
-        sourceOffset: sourceOffset2,
+        sourceOffset: lightningOrigin,
         destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
             -50 * Math.random(),
@@ -164,7 +159,10 @@ function Puffycloud({
             payload.totalForceMagnitude / 1000 > 100
         ) {
             flash.burst();
-            const cloudCenter = api.current.translation();
+            const cloudCenter = api.current
+                .translation()
+                .clone()
+                .add(new THREE.Vector3(0, 0, -0.5));
             if (onLightning) {
                 onLightning(cloudCenter);
             }
