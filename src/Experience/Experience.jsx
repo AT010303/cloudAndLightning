@@ -41,7 +41,7 @@ const Experience = () => {
 
     return (
         <Canvas
-            camera={{ position: [0, 0, 30] }}
+            camera={{ position: [0, 0, 40] }}
             dpr={[1, 2]}
             gl={{
                 antialias: false,
