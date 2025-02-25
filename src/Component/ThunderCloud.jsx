@@ -34,36 +34,43 @@ const ThunderCloud = ({ onLightning }) => {
         setLightningOrigin(cloudPosition);
     };
 
-    const customParams1 = {
-        ...defaultRayParams,
-        sourceOffset: lightningOrigin,
-        destOffset: new THREE.Vector3(
+    const customParams1 = useMemo(
+        () => ({
+          ...defaultRayParams,
+          sourceOffset: lightningOrigin,
+          destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
-            -50 * Math.random(),
+            (-50 + (20 * Math.random())),
             20 * (Math.random() - 0.5)
-        ),
-        roughness: 0.85,
-        maxIterations: 8,
-        maxSubrayRecursion: 4,
-        raymification: 9,
-        straightness: 0.5,
-        subrayPeriod: 1.5
-    };
-    const customParams2 = {
-        ...defaultRayParams,
-        sourceOffset: lightningOrigin,
-        destOffset: new THREE.Vector3(
+          ),
+          roughness: 0.85,
+          maxIterations: 8,
+          maxSubrayRecursion: 4,
+          raymification: 9,
+          straightness: 0.5,
+          subrayPeriod: 1.5
+        }),
+        [lightningOrigin]
+      );
+    
+      const customParams2 = useMemo(
+        () => ({
+          ...defaultRayParams,
+          sourceOffset: lightningOrigin,
+          destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
-            -50 * Math.random(),
+            (-30 + (20 * Math.random())),
             20 * (Math.random() - 0.5)
-        ),
-        roughness: 0.75,
-        maxIterations: 8,
-        maxSubrayRecursion: 4,
-        raymification: 9,
-        straightness: 0.35,
-        subrayPeriod: 1.5
-    };
+          ),
+          roughness: 0.75,
+          maxIterations: 8,
+          maxSubrayRecursion: 4,
+          raymification: 9,
+          straightness: 0.35,
+          subrayPeriod: 1.5
+        }),
+        [lightningOrigin]
+      );
 
     return (
         <>
@@ -159,10 +166,7 @@ function Puffycloud({
             payload.totalForceMagnitude / 1000 > 100
         ) {
             flash.burst();
-            const cloudCenter = api.current
-                .translation()
-                .clone()
-                .add(new THREE.Vector3(0, 0, -0.5));
+            const cloudCenter = api.current.translation();
             if (onLightning) {
                 onLightning(cloudCenter);
             }
