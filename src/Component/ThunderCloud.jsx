@@ -19,10 +19,10 @@ const ThunderCloud = ({ onLightning }) => {
 
     const cloudsRef = useRef();
 
-    const [lightningOrigin, setLightningOrigin] = useState(
-        new THREE.Vector3(0, 0, 0)
-    );
-    const contact = (cloudPosition) => {
+    const lightningOriginRef = useRef(new THREE.Vector3(0, 0, 0));
+    const triggeredCloudRef = useRef(null);
+
+    const contact = (cloudPosition, cloudApi) => {
         if (onLightning) {
             setActiveLightning([Math.random() > 0.5, Math.random() > 0.6]);
 
@@ -31,13 +31,21 @@ const ThunderCloud = ({ onLightning }) => {
                 setShowLightning(false);
             }, 1000 * Math.random());
         }
-        setLightningOrigin(cloudPosition);
+
+        triggeredCloudRef.current = cloudApi;
+
+        lightningOriginRef.current.copy(cloudPosition);        
     };
 
-    const customParams1 = useMemo(
-        () => ({
-          ...defaultRayParams,
-          sourceOffset: lightningOrigin,
+    useFrame(()=> {
+        if(showLightning && triggeredCloudRef.current){
+            lightningOriginRef.current.copy(triggeredCloudRef.current.translation());
+        }
+    });
+
+    const customParams1 = {
+          ...defaultRayParams(),
+          sourceOffset: lightningOriginRef.current,
           destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
             (-50 + (20 * Math.random())),
@@ -49,14 +57,11 @@ const ThunderCloud = ({ onLightning }) => {
           raymification: 9,
           straightness: 0.5,
           subrayPeriod: 1.5
-        }),
-        [lightningOrigin]
-      );
+        };
     
-      const customParams2 = useMemo(
-        () => ({
-          ...defaultRayParams,
-          sourceOffset: lightningOrigin,
+      const customParams2 = {
+          ...defaultRayParams(),
+          sourceOffset: lightningOriginRef.current,
           destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
             (-30 + (20 * Math.random())),
@@ -68,9 +73,7 @@ const ThunderCloud = ({ onLightning }) => {
           raymification: 9,
           straightness: 0.35,
           subrayPeriod: 1.5
-        }),
-        [lightningOrigin]
-      );
+        };
 
     return (
         <>
@@ -111,11 +114,13 @@ const ThunderCloud = ({ onLightning }) => {
                         {activeLightning[0] && (
                             <LightningStrikeComponent
                                 rayParams={customParams1}
+                                originRef={lightningOriginRef}
                             />
                         )}
                         {activeLightning[1] && (
                             <LightningStrikeComponent
                                 rayParams={customParams2}
+                                originRef={lightningOriginRef}
                             />
                         )}
                     </group>
@@ -168,7 +173,7 @@ function Puffycloud({
             flash.burst();
             const cloudCenter = api.current.translation();
             if (onLightning) {
-                onLightning(cloudCenter);
+                onLightning(cloudCenter, api.current);
             }
         }
     };

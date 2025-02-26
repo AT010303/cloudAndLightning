@@ -8,8 +8,8 @@ import * as THREE from 'three';
 import { LightningStrike } from '../utils/lightning/LightningStrike.js';
 
 // Default parameters (you can override these via props)
-export const defaultRayParams = {
-    sourceOffset: new THREE.Vector3(-45, 20, -10), // The point where the ray starts.
+export function defaultRayParams() {
+    return {sourceOffset: new THREE.Vector3(-45, 20, -10), // The point where the ray starts.
     destOffset: new THREE.Vector3(45, -10, 10), // The point where the ray ends.
     radius0: 0.2, // Radius of the main ray trunk at the start point. Default: 1
     radius1: 0.01, // Radius of the main ray trunk at the end point. Default: 1
@@ -30,12 +30,14 @@ export const defaultRayParams = {
     recursionProbability: 0.6, // From 0 to 1. The lower the value, the less chance each new generation of subrays has to generate new subrays. Default: 0.6
     roughness: 0.85, //From 0 to 1. The higher the value, the more wrinkled is the ray. Default: 0.9
     straightness: 0.6 // From 0 to 1. The higher the value, the more straight will be a subray path. Default: 0.7
-};
+    };
+}
 const LightningStrikeColor = ['#9be9fe', '#9bbcfe', '#9ba5fe', '#b09bfe'];
 
 const LightningStrikeComponent = ({
     // Allow the user to supply custom parameters or use defaults
     rayParams = defaultRayParams,
+    originRef,
     color = LightningStrikeColor[
         Math.floor(Math.random() * LightningStrikeColor.length)
     ],
@@ -60,7 +62,8 @@ const LightningStrikeComponent = ({
 
     // Update the lightning strike each frame (assuming update(time) modifies the geometry)
     useFrame(({ clock }) => {
-        if (geometry) {
+        if (geometry && originRef?.current) {
+            geometry.rayParameters.sourceOffset.copy(originRef.current);
             geometry.update(clock.getElapsedTime());
         }
     });
