@@ -247,7 +247,7 @@ function Puffycloud({
 
     useFrame((state, delta) => {
         const impulse = flash.update(state.clock.elapsedTime, delta);
-        if (light.current) light.current.intensity = impulse * 2;
+        if (light.current) light.current.intensity = impulse * 10;
         api.current?.applyImpulse(
             vec.copy(api.current.translation()).negate().multiplyScalar(10)
         );
@@ -261,7 +261,7 @@ function Puffycloud({
             linearDamping={4}
             angularDamping={1}
             friction={0.1}
-            // angularVelocity={[0, 0, 0]}
+            angularVelocity={[0, 0, 0]}
             {...props}
             colliders={false}
         >
@@ -271,10 +271,10 @@ function Puffycloud({
                 fade={30}
                 speed={0.1}
                 growth={4}
-                segments={40}
-                volume={6}
+                segments={20}
+                volume={20}
                 opacity={0.6}
-                bounds={[4, 3, 1]}
+                bounds={[12, 4 , 2]}
             />
             <Cloud
                 seed={seed + 1}
@@ -282,9 +282,10 @@ function Puffycloud({
                 position={[0, 1, 0]}
                 speed={0.5}
                 growth={4}
-                volume={10}
+                volume={20}
                 opacity={1}
-                bounds={[6, 2, 1]}
+                segments={20}
+                bounds={[16, 2, 4]}
             />
             <pointLight
                 position={[0, 0, 0.5]}

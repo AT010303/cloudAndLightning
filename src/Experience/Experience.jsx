@@ -41,7 +41,7 @@ const Experience = () => {
 
     return (
         <Canvas
-            camera={{ position: [0, 0, 40] }}
+            camera={{ position: [0, 0, 60] }}
             dpr={[1, 2]}
             gl={{
                 antialias: false,
@@ -84,7 +84,7 @@ const Experience = () => {
                     mipmapBlur={true}
                     luminanceThreshold={0.0}
                     luminanceSmoothing={0.95}
-                    intensity={10}
+                    intensity={15}
                 />
                 <Vignette eskil={false} offset={0.1} darkness={1.1} />
             </EffectComposer>
