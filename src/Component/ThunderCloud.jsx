@@ -22,7 +22,6 @@ const ThunderCloud = ({ onLightning }) => {
     const lightningOriginRef = useRef(new THREE.Vector3(0, 0, 0));
     const triggeredCloudRef = useRef(null);
 
-
     const { camera } = useThree();
 
     const listner = useMemo(() => {
@@ -31,8 +30,14 @@ const ThunderCloud = ({ onLightning }) => {
         return l;
     }, [camera]);
 
-    const thunderBuffer = useLoader(THREE.AudioLoader, '/sound/loudThunder.mp3');
-    const thunderAmbianceBuffer = useLoader(THREE.AudioLoader, '/sound/thunderAmbiance.mp3');
+    const thunderBuffer = useLoader(
+        THREE.AudioLoader,
+        '/sound/loudThunder.mp3'
+    );
+    const thunderAmbianceBuffer = useLoader(
+        THREE.AudioLoader,
+        '/sound/thunderAmbiance.mp3'
+    );
 
     const thunderInstancesRef = useRef([]);
     const thunderAmbianceInstancesRef = useRef([]);
@@ -60,29 +65,38 @@ const ThunderCloud = ({ onLightning }) => {
 
     const playLightningSound = () => {
         // For Thunder sound
-    thunderInstancesRef.current = thunderInstancesRef.current.filter(sound => sound.isPlaying);
-    if (thunderInstancesRef.current.length < 8) {
-      const thunder = new THREE.Audio(listner);
-      thunder.setBuffer(thunderBuffer);
-      thunder.setVolume(0.5);
-      thunder.play();
-      thunder.onEnded = () => {
-        thunderInstancesRef.current = thunderInstancesRef.current.filter(s => s !== thunder);
-      };
-      thunderInstancesRef.current.push(thunder);
-    }
-    // For Ambiance sound
-    thunderAmbianceInstancesRef.current = thunderAmbianceInstancesRef.current.filter(sound => sound.isPlaying);
-    if (thunderAmbianceInstancesRef.current.length < 8) {
-      const ambiance = new THREE.Audio(listner);
-      ambiance.setBuffer(thunderAmbianceBuffer);
-      ambiance.setVolume(0.25);
-      ambiance.play();
-      ambiance.onEnded = () => {
-        thunderAmbianceInstancesRef.current = thunderAmbianceInstancesRef.current.filter(s => s !== ambiance);
-      };
-      thunderAmbianceInstancesRef.current.push(ambiance);
-    }
+        thunderInstancesRef.current = thunderInstancesRef.current.filter(
+            (sound) => sound.isPlaying
+        );
+        if (thunderInstancesRef.current.length < 8) {
+            const thunder = new THREE.Audio(listner);
+            thunder.setBuffer(thunderBuffer);
+            thunder.setVolume(0.5);
+            thunder.play();
+            thunder.onEnded = () => {
+                thunderInstancesRef.current =
+                    thunderInstancesRef.current.filter((s) => s !== thunder);
+            };
+            thunderInstancesRef.current.push(thunder);
+        }
+        // For Ambiance sound
+        thunderAmbianceInstancesRef.current =
+            thunderAmbianceInstancesRef.current.filter(
+                (sound) => sound.isPlaying
+            );
+        if (thunderAmbianceInstancesRef.current.length < 8) {
+            const ambiance = new THREE.Audio(listner);
+            ambiance.setBuffer(thunderAmbianceBuffer);
+            ambiance.setVolume(0.25);
+            ambiance.play();
+            ambiance.onEnded = () => {
+                thunderAmbianceInstancesRef.current =
+                    thunderAmbianceInstancesRef.current.filter(
+                        (s) => s !== ambiance
+                    );
+            };
+            thunderAmbianceInstancesRef.current.push(ambiance);
+        }
     };
 
     const contact = (cloudPosition, cloudApi) => {
@@ -90,54 +104,61 @@ const ThunderCloud = ({ onLightning }) => {
             setActiveLightning([Math.random() > 0.4, Math.random() > 0.6]);
 
             setShowLightning(true);
+            setTimeout(
+                () => {
+                    setShowLightning(false);
+                },
+                1000 + 1000 * Math.random()
+            );
+        }
+        if (activeLightning[0] || activeLightning[1]) {
             playLightningSound();
-            setTimeout(() => {
-                setShowLightning(false);
-            }, (1000+ (1000 * Math.random())));
         }
 
         triggeredCloudRef.current = cloudApi;
 
-        lightningOriginRef.current.copy(cloudPosition);        
+        lightningOriginRef.current.copy(cloudPosition);
     };
 
-    useFrame(()=> {
-        if(showLightning && triggeredCloudRef.current){
-            lightningOriginRef.current.copy(triggeredCloudRef.current.translation());
+    useFrame(() => {
+        if (showLightning && triggeredCloudRef.current) {
+            lightningOriginRef.current.copy(
+                triggeredCloudRef.current.translation()
+            );
         }
     });
 
     const customParams1 = {
-          ...defaultRayParams(),
-          sourceOffset: lightningOriginRef.current,
-          destOffset: new THREE.Vector3(
+        ...defaultRayParams(),
+        sourceOffset: lightningOriginRef.current,
+        destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
-            (-50 + (20 * Math.random())),
+            -50 + 20 * Math.random(),
             20 * (Math.random() - 0.5)
-          ),
-          roughness: 0.85,
-          maxIterations: 8,
-          maxSubrayRecursion: 4,
-          raymification: 9,
-          straightness: 0.5,
-          subrayPeriod: 1.5
-        };
-    
-      const customParams2 = {
-          ...defaultRayParams(),
-          sourceOffset: lightningOriginRef.current,
-          destOffset: new THREE.Vector3(
+        ),
+        roughness: 0.85,
+        maxIterations: 8,
+        maxSubrayRecursion: 4,
+        raymification: 9,
+        straightness: 0.5,
+        subrayPeriod: 1.5
+    };
+
+    const customParams2 = {
+        ...defaultRayParams(),
+        sourceOffset: lightningOriginRef.current,
+        destOffset: new THREE.Vector3(
             8 * (Math.random() - 0.5),
-            (-30 + (20 * Math.random())),
+            -30 + 20 * Math.random(),
             20 * (Math.random() - 0.5)
-          ),
-          roughness: 0.75,
-          maxIterations: 8,
-          maxSubrayRecursion: 4,
-          raymification: 9,
-          straightness: 0.35,
-          subrayPeriod: 1.5
-        };
+        ),
+        roughness: 0.75,
+        maxIterations: 8,
+        maxSubrayRecursion: 4,
+        raymification: 9,
+        straightness: 0.35,
+        subrayPeriod: 1.5
+    };
 
     return (
         <>
