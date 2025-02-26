@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Cloud, Clouds } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader, useThree } from '@react-three/fiber';
 import {
     BallCollider,
     CuboidCollider,
@@ -22,11 +22,75 @@ const ThunderCloud = ({ onLightning }) => {
     const lightningOriginRef = useRef(new THREE.Vector3(0, 0, 0));
     const triggeredCloudRef = useRef(null);
 
+
+    const { camera } = useThree();
+
+    const listner = useMemo(() => {
+        const l = new THREE.AudioListener();
+        camera.add(l);
+        return l;
+    }, [camera]);
+
+    const thunderBuffer = useLoader(THREE.AudioLoader, '/sound/loudThunder.mp3');
+    const thunderAmbianceBuffer = useLoader(THREE.AudioLoader, '/sound/thunderAmbiance.mp3');
+
+    const thunderInstancesRef = useRef([]);
+    const thunderAmbianceInstancesRef = useRef([]);
+
+    // const thunderSound = useMemo(() => {
+    //     const sound = new THREE.Audio(listner);
+    //     sound.setBuffer(thunderBuffer);
+    //     sound.setVolume(1.0);
+    //     return sound;
+    // }, [listner, thunderBuffer]);
+
+    // const thunderAmbianceSound = useMemo(() => {
+    //     const sound = new THREE.Audio(listner);
+    //     sound.setBuffer(thunderAmbianceBuffer);
+    //     sound.setVolume(0.5);
+    //     return sound;
+    // }, [listner, thunderAmbianceBuffer]);
+
+    // useEffect(()=> {
+    //     if(showLightning){
+    //         thunderSound.play();
+    //         thunderAmbianceSound.play();
+    //     }
+    // },[showLightning, thunderSound, thunderAmbianceSound]);
+
+    const playLightningSound = () => {
+        // For Thunder sound
+    thunderInstancesRef.current = thunderInstancesRef.current.filter(sound => sound.isPlaying);
+    if (thunderInstancesRef.current.length < 8) {
+      const thunder = new THREE.Audio(listner);
+      thunder.setBuffer(thunderBuffer);
+      thunder.setVolume(0.5);
+      thunder.play();
+      thunder.onEnded = () => {
+        thunderInstancesRef.current = thunderInstancesRef.current.filter(s => s !== thunder);
+      };
+      thunderInstancesRef.current.push(thunder);
+    }
+    // For Ambiance sound
+    thunderAmbianceInstancesRef.current = thunderAmbianceInstancesRef.current.filter(sound => sound.isPlaying);
+    if (thunderAmbianceInstancesRef.current.length < 8) {
+      const ambiance = new THREE.Audio(listner);
+      ambiance.setBuffer(thunderAmbianceBuffer);
+      ambiance.setVolume(0.25);
+      ambiance.play();
+      ambiance.onEnded = () => {
+        thunderAmbianceInstancesRef.current = thunderAmbianceInstancesRef.current.filter(s => s !== ambiance);
+      };
+      thunderAmbianceInstancesRef.current.push(ambiance);
+    }
+    };
+
     const contact = (cloudPosition, cloudApi) => {
         if (onLightning) {
             setActiveLightning([Math.random() > 0.4, Math.random() > 0.6]);
 
             setShowLightning(true);
+            playLightningSound();
             setTimeout(() => {
                 setShowLightning(false);
             }, (1000+ (1000 * Math.random())));
