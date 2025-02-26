@@ -24,12 +24,12 @@ const ThunderCloud = ({ onLightning }) => {
 
     const contact = (cloudPosition, cloudApi) => {
         if (onLightning) {
-            setActiveLightning([Math.random() > 0.5, Math.random() > 0.6]);
+            setActiveLightning([Math.random() > 0.4, Math.random() > 0.6]);
 
             setShowLightning(true);
             setTimeout(() => {
                 setShowLightning(false);
-            }, 1000 * Math.random());
+            }, (1000+ (1000 * Math.random())));
         }
 
         triggeredCloudRef.current = cloudApi;
@@ -180,7 +180,7 @@ function Puffycloud({
 
     useFrame((state, delta) => {
         const impulse = flash.update(state.clock.elapsedTime, delta);
-        if (light.current) light.current.intensity = impulse * 10;
+        if (light.current) light.current.intensity = impulse * 2;
         api.current?.applyImpulse(
             vec.copy(api.current.translation()).negate().multiplyScalar(10)
         );

@@ -84,7 +84,7 @@ const Experience = () => {
                     mipmapBlur={true}
                     luminanceThreshold={0.0}
                     luminanceSmoothing={0.95}
-                    intensity={5}
+                    intensity={10}
                 />
                 <Vignette eskil={false} offset={0.1} darkness={1.1} />
             </EffectComposer>
