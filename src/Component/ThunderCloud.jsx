@@ -47,7 +47,7 @@ const ThunderCloud = ({ onLightning }) => {
         thunderInstancesRef.current = thunderInstancesRef.current.filter(
             (sound) => sound.isPlaying
         );
-        if (thunderInstancesRef.current.length < 16) {
+        if (thunderInstancesRef.current.length < 8) {
             const thunder = new THREE.Audio(listner);
             thunder.setBuffer(thunderBuffer);
             thunder.setVolume(0.5);
@@ -63,7 +63,7 @@ const ThunderCloud = ({ onLightning }) => {
             thunderAmbianceInstancesRef.current.filter(
                 (sound) => sound.isPlaying
             );
-        if (thunderAmbianceInstancesRef.current.length < 16) {
+        if (thunderAmbianceInstancesRef.current.length < 8) {
             const ambiance = new THREE.Audio(listner);
             ambiance.setBuffer(thunderAmbianceBuffer);
             ambiance.setVolume(0.25);
