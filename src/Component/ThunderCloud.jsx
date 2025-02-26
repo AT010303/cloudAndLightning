@@ -8,7 +8,7 @@ import {
     RigidBody
 } from '@react-three/rapier';
 import { random } from 'maath';
-import { useCallback,useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 import LightningStrikeComponent, { defaultRayParams } from './LightningStrike';
@@ -41,27 +41,6 @@ const ThunderCloud = ({ onLightning }) => {
 
     const thunderInstancesRef = useRef([]);
     const thunderAmbianceInstancesRef = useRef([]);
-
-    // const thunderSound = useMemo(() => {
-    //     const sound = new THREE.Audio(listner);
-    //     sound.setBuffer(thunderBuffer);
-    //     sound.setVolume(1.0);
-    //     return sound;
-    // }, [listner, thunderBuffer]);
-
-    // const thunderAmbianceSound = useMemo(() => {
-    //     const sound = new THREE.Audio(listner);
-    //     sound.setBuffer(thunderAmbianceBuffer);
-    //     sound.setVolume(0.5);
-    //     return sound;
-    // }, [listner, thunderAmbianceBuffer]);
-
-    // useEffect(()=> {
-    //     if(showLightning){
-    //         thunderSound.play();
-    //         thunderAmbianceSound.play();
-    //     }
-    // },[showLightning, thunderSound, thunderAmbianceSound]);
 
     const playLightningSound = useCallback(() => {
         // For Thunder sound
@@ -111,7 +90,6 @@ const ThunderCloud = ({ onLightning }) => {
                 1000 + 1000 * Math.random()
             );
         }
-        
 
         triggeredCloudRef.current = cloudApi;
 
