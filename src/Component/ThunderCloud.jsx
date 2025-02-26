@@ -8,7 +8,7 @@ import {
     RigidBody
 } from '@react-three/rapier';
 import { random } from 'maath';
-import { useMemo, useRef, useState } from 'react';
+import { useCallback,useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 import LightningStrikeComponent, { defaultRayParams } from './LightningStrike';
@@ -63,12 +63,12 @@ const ThunderCloud = ({ onLightning }) => {
     //     }
     // },[showLightning, thunderSound, thunderAmbianceSound]);
 
-    const playLightningSound = () => {
+    const playLightningSound = useCallback(() => {
         // For Thunder sound
         thunderInstancesRef.current = thunderInstancesRef.current.filter(
             (sound) => sound.isPlaying
         );
-        if (thunderInstancesRef.current.length < 8) {
+        if (thunderInstancesRef.current.length < 16) {
             const thunder = new THREE.Audio(listner);
             thunder.setBuffer(thunderBuffer);
             thunder.setVolume(0.5);
@@ -84,7 +84,7 @@ const ThunderCloud = ({ onLightning }) => {
             thunderAmbianceInstancesRef.current.filter(
                 (sound) => sound.isPlaying
             );
-        if (thunderAmbianceInstancesRef.current.length < 8) {
+        if (thunderAmbianceInstancesRef.current.length < 16) {
             const ambiance = new THREE.Audio(listner);
             ambiance.setBuffer(thunderAmbianceBuffer);
             ambiance.setVolume(0.25);
@@ -97,7 +97,7 @@ const ThunderCloud = ({ onLightning }) => {
             };
             thunderAmbianceInstancesRef.current.push(ambiance);
         }
-    };
+    }, [listner, thunderBuffer, thunderAmbianceBuffer]);
 
     const contact = (cloudPosition, cloudApi) => {
         if (onLightning) {
@@ -111,14 +111,18 @@ const ThunderCloud = ({ onLightning }) => {
                 1000 + 1000 * Math.random()
             );
         }
-        if (activeLightning[0] || activeLightning[1]) {
-            playLightningSound();
-        }
+        
 
         triggeredCloudRef.current = cloudApi;
 
         lightningOriginRef.current.copy(cloudPosition);
     };
+
+    useEffect(() => {
+        if (showLightning && (activeLightning[0] || activeLightning[1])) {
+            playLightningSound();
+        }
+    }, [showLightning, activeLightning, playLightningSound]);
 
     useFrame(() => {
         if (showLightning && triggeredCloudRef.current) {
